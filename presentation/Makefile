@@ -6,7 +6,7 @@ LATEX_FLAGS = -interaction=nonstopmode -halt-on-error
 
 .PHONY: all clean purge
 
-all: slides.pdf
+all: slides.pdf clean
 
 slides.pdf: slides.tex
 	$(LATEX) $(LATEX_FLAGS) slides.tex
