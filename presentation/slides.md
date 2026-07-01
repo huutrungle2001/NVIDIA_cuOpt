@@ -25,7 +25,10 @@ style: |
 # NVIDIA cuOpt
 ### GPU-Accelerated Decision Optimization
 
-Accelerate vehicle routing, supply chain routing, and mathematical scheduling with world-record speed.
+**Speaker:** Dr. Duc Minh Vu
+*Director of Smart Logistics and Supply Chain Management Research Lab*
+*Faculty of Data Science and Artificial Intelligence, College of Technology*
+*National Economics University*
 
 ---
 
