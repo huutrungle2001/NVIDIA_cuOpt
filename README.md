@@ -4,6 +4,7 @@ Welcome to the NVIDIA cuOpt Information Hub. This repository contains complete d
 
 ## Contents
 
+- [**Executive Summary**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/summary.md): Read a quick, concise overview of everything cuOpt has to offer.
 - [**01. Overview & Core Capabilities**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/01_overview.md): Learn what NVIDIA cuOpt is, its solver engine capabilities (LP, MIP, VRP, QP), and how it integrates into agentic workflows.
 - [**02. Key Benefits**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/02_benefits.md): Explore the performance benchmarks, world records, cloud scalability, and enterprise support details.
 - [**03. Real-World Use Cases**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/03_use_cases.md): Discover how cuOpt is applied to Supply Chain, Fleet Management, Last-Mile Delivery, Field Dispatch, Job Scheduling, and Portfolio Optimization.
