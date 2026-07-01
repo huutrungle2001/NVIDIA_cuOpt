@@ -46,7 +46,7 @@ Mixed-Integer Programming is traditionally CPU-bound. cuOpt introduces a **hybri
 ---
 
 *Related Documents:*
-- [**Executive Summary**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/summary.md)
+- [**00. Executive Summary**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/00_summary.md)
 - [**02. Key Benefits**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/02_benefits.md)
 - [**03. Real-World Use Cases**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/03_use_cases.md)
 - [**04. Getting Started Guide**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/04_getting_started.md)
