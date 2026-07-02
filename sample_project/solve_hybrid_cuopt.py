@@ -153,9 +153,7 @@ def solve_hybrid_with_cuopt(filepath):
             v_route = route_df[route_df['route'] == v]
             if not v_route.empty:
                 # Total time for vehicle is the arrival time of its last return to the depot
-                # Gurobi/cuOpt objective uses the cost matrix. 
-                # Let's compute the total path duration manually from the cost matrix:
-                nodes = v_route['location'].to_list()
+                nodes = v_route['location'].to_arrow().to_pylist()
                 total_time = 0.0
                 curr = 0
                 for node in nodes:
