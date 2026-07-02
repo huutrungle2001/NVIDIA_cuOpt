@@ -100,11 +100,9 @@ def solve_hybrid_with_cuopt(filepath):
     n_orders = n_locations - 1
     dm = routing.DataModel(n_locations=n_locations, n_fleet=n_fleet, n_orders=n_orders)
     
-    # Add heterogeneous cost matrices: 
-    # Vehicle 0 is the Truck, Vehicles 1 to N are the Drones
+    # Add heterogeneous cost matrices: Type 0 is Truck, Type 1 is Drone
     dm.add_cost_matrix(truck_df, 0)
-    for i in range(1, n_fleet):
-        dm.add_cost_matrix(drone_df, 1) # Note: type 1 is drone type
+    dm.add_cost_matrix(drone_df, 1)
         
     # Map each vehicle to its corresponding vehicle type
     vehicle_types = cudf.Series([0] + [1] * num_drones, dtype=np.int32)
