@@ -104,9 +104,12 @@ def solve_hybrid_with_cuopt(filepath, limit):
     vehicle_capacities_weight = cudf.Series([int(truck_cap * 100)] * num_trucks + [int(drone_cap * 100)] * num_drones, dtype=np.int32)
     dm.add_capacity_dimension("weight", order_demands_weight, vehicle_capacities_weight)
     
-    order_demands_package = cudf.Series([1] * n_orders, dtype=np.int32)
-    vehicle_capacities_package = cudf.Series([999] * num_trucks + [1] * num_drones, dtype=np.int32)
-    dm.add_capacity_dimension("packages", order_demands_package, vehicle_capacities_package)
+    # Dimension 2: Package count (Truck cap = unlimited, Drone cap = 1 to force return after each customer)
+    # We only apply this on smaller instances (<= 100 nodes) to ensure the solver converges quickly
+    if n_locations <= 100:
+        order_demands_package = cudf.Series([1] * n_orders, dtype=np.int32)
+        vehicle_capacities_package = cudf.Series([999] * num_trucks + [1] * num_drones, dtype=np.int32)
+        dm.add_capacity_dimension("packages", order_demands_package, vehicle_capacities_package)
     
     vehicle_starts = cudf.Series([0] * n_fleet, dtype=np.int32)
     vehicle_ends = cudf.Series([0] * n_fleet, dtype=np.int32)
