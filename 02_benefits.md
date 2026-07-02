@@ -50,4 +50,5 @@ For production deployments, cuOpt is supported under **NVIDIA AI Enterprise**:
 - [**01. Overview & Core Capabilities**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/01_overview.md)
 - [**03. Real-World Use Cases**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/03_use_cases.md)
 - [**04. Getting Started Guide**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/04_getting_started.md)
+- [**05. Agentic Workflows**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/05_agentic_workflows.md)
 - [**README Index**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/README.md)

@@ -9,6 +9,7 @@ Welcome to the NVIDIA cuOpt Information Hub. This repository contains complete d
 - [**02. Key Benefits**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/02_benefits.md): Explore the performance benchmarks, world records, cloud scalability, and enterprise support details.
 - [**03. Real-World Use Cases**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/03_use_cases.md): Discover how cuOpt is applied to Supply Chain, Fleet Management, Last-Mile Delivery, Field Dispatch, Job Scheduling, and Portfolio Optimization.
 - [**04. Getting Started Guide**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/04_getting_started.md): Practical ways to start experimenting and developing with cuOpt, including Google Colab, API Catalog, GitHub, and integrations.
+- [**05. Agentic Workflows & cuOpt Agent Skills**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/05_agentic_workflows.md): Discover how AI agents leverage modular cuOpt skills to dynamically model, execute, and debug decisions.
 
 ---
 

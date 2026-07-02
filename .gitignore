@@ -12,3 +12,6 @@
 
 # System files
 .DS_Store
+
+# Nested cloned repositories
+skills/
