@@ -214,6 +214,12 @@ def solve_worker(solver_name, solve_func, args, return_dict):
         return_dict[solver_name] = (None, None, str(e))
 
 if __name__ == "__main__":
+    # Use 'spawn' start method to prevent CUDA initialization errors in child processes
+    try:
+        multiprocessing.set_start_method('spawn', force=True)
+    except RuntimeError:
+        pass
+
     if len(sys.argv) < 2:
         print("Usage: python solve_benchmark.py <instance_file> [timeout_seconds]")
         sys.exit(1)
