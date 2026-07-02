@@ -2,6 +2,7 @@ import sys
 import time
 import os
 import numpy as np
+import multiprocessing
 
 # Try imports
 try:
@@ -23,10 +24,6 @@ try:
     HAS_PULP = True
 except ImportError:
     HAS_PULP = False
-
-# Explicitly point Gurobi to the academic license file if it exists
-if os.path.exists("/home/orlab/gurobi_license.lic"):
-    os.environ["GRB_LICENSE_FILE"] = "/home/orlab/gurobi_license.lic"
 
 def parse_instance(filepath):
     num_trucks = 10
@@ -74,7 +71,7 @@ def calculate_distance_matrix(coords):
             matrix[i][j] = np.sqrt(dx*dx + dy*dy)
     return matrix
 
-def run_cuopt(n_locations, n_fleet, capacity, distances, demands):
+def run_cuopt(n_locations, n_fleet, capacity, distances, demands, timeout):
     if not HAS_CUOPT:
         return None, None, "Not installed"
         
@@ -94,7 +91,7 @@ def run_cuopt(n_locations, n_fleet, capacity, distances, demands):
         dm.set_vehicle_locations(truck_starts, truck_ends)
         
         settings = routing.SolverSettings()
-        settings.set_time_limit(10)
+        settings.set_time_limit(int(timeout))
         
         solution = routing.Solve(dm, settings)
         solve_end = time.perf_counter()
@@ -107,7 +104,7 @@ def run_cuopt(n_locations, n_fleet, capacity, distances, demands):
     except Exception as e:
         return None, None, str(e)
 
-def run_gurobi(n_locations, n_fleet, capacity, distances, demands):
+def run_gurobi(n_locations, n_fleet, capacity, distances, demands, timeout):
     if not HAS_GUROBI:
         return None, None, "Not installed"
         
@@ -117,7 +114,7 @@ def run_gurobi(n_locations, n_fleet, capacity, distances, demands):
         env.start()
         
         m = gp.Model("VRP", env=env)
-        m.setParam("TimeLimit", 30)
+        m.setParam("TimeLimit", float(timeout))
         
         x = m.addVars(n_locations, n_locations, vtype=GRB.BINARY, name="x")
         u = m.addVars(range(1, n_locations), lb=[demands[i] for i in range(1, n_locations)], ub=capacity, name="u")
@@ -159,7 +156,7 @@ def run_gurobi(n_locations, n_fleet, capacity, distances, demands):
     except Exception as e:
         return None, None, str(e)
 
-def run_cplex(n_locations, n_fleet, capacity, distances, demands):
+def run_cplex(n_locations, n_fleet, capacity, distances, demands, timeout):
     if not HAS_PULP:
         return None, None, "PuLP not installed"
         
@@ -168,49 +165,33 @@ def run_cplex(n_locations, n_fleet, capacity, distances, demands):
         return None, None, f"CPLEX executable not found at {cplex_path}"
         
     try:
-        # Define the problem using PuLP
         prob = pulp.LpProblem("VRP", pulp.LpMinimize)
-        
-        # Variables: x_ij binary
         x = pulp.LpVariable.dicts("x", ((i, j) for i in range(n_locations) for j in range(n_locations)), cat='Binary')
-        
-        # Variables: u_i continuous
         u = pulp.LpVariable.dicts("u", (i for i in range(1, n_locations)), lowBound=0, upBound=capacity, cat='Continuous')
         
-        # Objective
         prob += pulp.lpSum(distances[i][j] * x[i, j] for i in range(n_locations) for j in range(n_locations))
         
-        # Constraints:
-        # 1. No self loops
         for i in range(n_locations):
             prob += x[i, i] == 0
             
-        # 2. In-degree = 1
         for j in range(1, n_locations):
             prob += pulp.lpSum(x[i, j] for i in range(n_locations)) == 1
             
-        # 3. Out-degree = 1
         for i in range(1, n_locations):
             prob += pulp.lpSum(x[i, j] for j in range(n_locations)) == 1
             
-        # 4. Fleet limit outgoing from depot
         prob += pulp.lpSum(x[0, j] for j in range(1, n_locations)) <= n_fleet
-        
-        # 5. Fleet limit incoming to depot
         prob += pulp.lpSum(x[i, 0] for i in range(1, n_locations)) <= n_fleet
         
-        # 6. Set bounds on u_i: demand_i <= u_i
         for i in range(1, n_locations):
             prob += u[i] >= demands[i]
             
-        # 7. MTZ capacity constraints
         for i in range(1, n_locations):
             for j in range(1, n_locations):
                 if i != j:
                     prob += u[i] - u[j] + capacity * x[i, j] <= capacity - demands[j]
                     
-        # Run the solver via Command Line Interface (uses full licensed binary)
-        solver = pulp.CPLEX_CMD(path=cplex_path, timeLimit=30, msg=False)
+        solver = pulp.CPLEX_CMD(path=cplex_path, timeLimit=float(timeout), msg=False)
         
         solve_start = time.perf_counter()
         status = prob.solve(solver)
@@ -223,43 +204,72 @@ def run_cplex(n_locations, n_fleet, capacity, distances, demands):
     except Exception as e:
         return None, None, str(e)
 
+def solve_worker(solver_name, solve_func, args, return_dict):
+    if os.path.exists("/home/orlab/gurobi_license.lic"):
+        os.environ["GRB_LICENSE_FILE"] = "/home/orlab/gurobi_license.lic"
+    try:
+        obj, elapsed, msg = solve_func(*args)
+        return_dict[solver_name] = (obj, elapsed, msg)
+    except Exception as e:
+        return_dict[solver_name] = (None, None, str(e))
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python solve_benchmark.py <instance_file>")
+        print("Usage: python solve_benchmark.py <instance_file> [timeout_seconds]")
         sys.exit(1)
         
     filepath = sys.argv[1]
-    
+    timeout = 60.0
+    if len(sys.argv) >= 3:
+        timeout = float(sys.argv[2])
+        
     print(f"Parsing instance file: {filepath}...")
     num_trucks, capacity, coords, demands = parse_instance(filepath)
     n_locations = len(coords)
     
     print(f"Loaded {n_locations} locations (depot + {n_locations-1} customers).")
     print(f"Fleet: {num_trucks} trucks, Capacity per truck: {capacity}")
+    print(f"Time limit set to: {timeout} seconds")
     
     distances = calculate_distance_matrix(coords)
     
-    print("\nRunning Benchmarks...")
+    print("\nStarting Parallel Benchmarks (Multiprocessing)...")
     print("--------------------------------------------------")
     
-    # Gurobi
-    g_obj, g_time, g_msg = run_gurobi(n_locations, num_trucks, capacity, distances, demands)
-    if g_obj is not None:
-        print(f"Gurobi:  Objective = {g_obj:.2f}, Time = {g_time:.4f} s ({g_msg})")
-    else:
-        print(f"Gurobi:  Failed ({g_msg})")
+    # Use multiprocessing manager to gather results from child processes
+    manager = multiprocessing.Manager()
+    return_dict = manager.dict()
+    
+    solvers = [
+        ("Gurobi", run_gurobi),
+        ("CPLEX", run_cplex),
+        ("cuOpt", run_cuopt)
+    ]
+    
+    processes = []
+    for name, func in solvers:
+        p = multiprocessing.Process(
+            target=solve_worker,
+            args=(name, func, (n_locations, num_trucks, capacity, distances, demands, timeout), return_dict)
+        )
+        processes.append(p)
+        p.start()
+        print(f"Launched {name} solver in background process...")
         
-    # CPLEX
-    c_obj, c_time, c_msg = run_cplex(n_locations, num_trucks, capacity, distances, demands)
-    if c_obj is not None:
-        print(f"CPLEX:   Objective = {c_obj:.2f}, Time = {c_time:.4f} s ({c_msg})")
-    else:
-        print(f"CPLEX:   Failed ({c_msg})")
+    # Wait for all processes to finish
+    for p in processes:
+        p.join()
         
-    # cuOpt
-    cu_obj, cu_time, cu_msg = run_cuopt(n_locations, num_trucks, capacity, distances, demands)
-    if cu_obj is not None:
-        print(f"cuOpt:   Objective = {cu_obj:.2f}, Time = {cu_time:.4f} s ({cu_msg})")
-    else:
-        print(f"cuOpt:   Failed ({cu_msg})")
+    print("\nBenchmarks Completed!")
+    print("--------------------------------------------------")
+    
+    for name, _ in solvers:
+        if name in return_dict:
+            obj, elapsed, msg = return_dict[name]
+            if obj is not None:
+                print(f"{name:<8}: Objective = {obj:.2f}, Time = {elapsed:.4f} s ({msg})")
+            else:
+                print(f"{name:<8}: Failed ({msg})")
+        else:
+            print(f"{name:<8}: Failed (No return data)")
     print("--------------------------------------------------")
