@@ -1,5 +1,6 @@
 import sys
 import time
+import os
 import numpy as np
 
 # Try imports
@@ -18,10 +19,14 @@ except ImportError:
     HAS_GUROBI = False
 
 try:
-    import cplex
-    HAS_CPLEX = True
+    import pulp
+    HAS_PULP = True
 except ImportError:
-    HAS_CPLEX = False
+    HAS_PULP = False
+
+# Explicitly point Gurobi to the academic license file if it exists
+if os.path.exists("/home/orlab/gurobi_license.lic"):
+    os.environ["GRB_LICENSE_FILE"] = "/home/orlab/gurobi_license.lic"
 
 def parse_instance(filepath):
     num_trucks = 10
@@ -155,103 +160,66 @@ def run_gurobi(n_locations, n_fleet, capacity, distances, demands):
         return None, None, str(e)
 
 def run_cplex(n_locations, n_fleet, capacity, distances, demands):
-    if not HAS_CPLEX:
-        return None, None, "Not installed"
+    if not HAS_PULP:
+        return None, None, "PuLP not installed"
+        
+    cplex_path = "/opt/ibm/ILOG/CPLEX_Studio2211/cplex/bin/x86-64_linux/cplex"
+    if not os.path.exists(cplex_path):
+        return None, None, f"CPLEX executable not found at {cplex_path}"
         
     try:
-        c = cplex.Cplex()
-        c.set_results_stream(None)
-        c.set_log_stream(None)
-        c.parameters.timelimit.set(30.0)
+        # Define the problem using PuLP
+        prob = pulp.LpProblem("VRP", pulp.LpMinimize)
         
-        c.objective.set_sense(c.objective.sense.minimize)
+        # Variables: x_ij binary
+        x = pulp.LpVariable.dicts("x", ((i, j) for i in range(n_locations) for j in range(n_locations)), cat='Binary')
         
-        var_names = []
-        var_types = []
-        var_objs = []
+        # Variables: u_i continuous
+        u = pulp.LpVariable.dicts("u", (i for i in range(1, n_locations)), lowBound=0, upBound=capacity, cat='Continuous')
         
+        # Objective
+        prob += pulp.lpSum(distances[i][j] * x[i, j] for i in range(n_locations) for j in range(n_locations))
+        
+        # Constraints:
+        # 1. No self loops
         for i in range(n_locations):
-            for j in range(n_locations):
-                var_names.append(f"x_{i}_{j}")
-                var_types.append(c.variables.type.binary)
-                var_objs.append(float(distances[i][j]))
-                
-        for i in range(1, n_locations):
-            var_names.append(f"u_{i}")
-            var_types.append(c.variables.type.continuous)
-            var_objs.append(0.0)
+            prob += x[i, i] == 0
             
-        c.variables.add(obj=var_objs, types=var_types, names=var_names)
-        
-        for i in range(1, n_locations):
-            c.variables.set_lower_bounds(f"u_{i}", float(demands[i]))
-            c.variables.set_upper_bounds(f"u_{i}", float(capacity))
-            
-        for i in range(n_locations):
-            c.linear_constraints.add(
-                lin_expr=[cplex.SparsePair(ind=[f"x_{i}_{i}"], val=[1.0])],
-                senses=["E"],
-                rhs=[0.0]
-            )
-            
+        # 2. In-degree = 1
         for j in range(1, n_locations):
-            ind = [f"x_{i}_{j}" for i in range(n_locations)]
-            val = [1.0] * n_locations
-            c.linear_constraints.add(
-                lin_expr=[cplex.SparsePair(ind=ind, val=val)],
-                senses=["E"],
-                rhs=[1.0]
-            )
+            prob += pulp.lpSum(x[i, j] for i in range(n_locations)) == 1
             
+        # 3. Out-degree = 1
         for i in range(1, n_locations):
-            ind = [f"x_{i}_{j}" for j in range(n_locations)]
-            val = [1.0] * n_locations
-            c.linear_constraints.add(
-                lin_expr=[cplex.SparsePair(ind=ind, val=val)],
-                senses=["E"],
-                rhs=[1.0]
-            )
+            prob += pulp.lpSum(x[i, j] for j in range(n_locations)) == 1
             
-        ind = [f"x_0_{j}" for j in range(1, n_locations)]
-        val = [1.0] * (n_locations - 1)
-        c.linear_constraints.add(
-            lin_expr=[cplex.SparsePair(ind=ind, val=val)],
-            senses=["L"],
-            rhs=[float(n_fleet)]
-        )
+        # 4. Fleet limit outgoing from depot
+        prob += pulp.lpSum(x[0, j] for j in range(1, n_locations)) <= n_fleet
         
-        ind = [f"x_{i}_0" for i in range(1, n_locations)]
-        val = [1.0] * (n_locations - 1)
-        c.linear_constraints.add(
-            lin_expr=[cplex.SparsePair(ind=ind, val=val)],
-            senses=["L"],
-            rhs=[float(n_fleet)]
-        )
+        # 5. Fleet limit incoming to depot
+        prob += pulp.lpSum(x[i, 0] for i in range(1, n_locations)) <= n_fleet
         
+        # 6. Set bounds on u_i: demand_i <= u_i
+        for i in range(1, n_locations):
+            prob += u[i] >= demands[i]
+            
+        # 7. MTZ capacity constraints
         for i in range(1, n_locations):
             for j in range(1, n_locations):
                 if i != j:
-                    ind = [f"u_{i}", f"u_{j}", f"x_{i}_{j}"]
-                    val = [1.0, -1.0, float(capacity)]
-                    c.linear_constraints.add(
-                        lin_expr=[cplex.SparsePair(ind=ind, val=val)],
-                        senses=["L"],
-                        rhs=[float(capacity - demands[j])]
-                    )
+                    prob += u[i] - u[j] + capacity * x[i, j] <= capacity - demands[j]
                     
+        # Run the solver via Command Line Interface (uses full licensed binary)
+        solver = pulp.CPLEX_CMD(path=cplex_path, timeLimit=30, msg=False)
+        
         solve_start = time.perf_counter()
-        c.solve()
+        status = prob.solve(solver)
         solve_end = time.perf_counter()
         
-        status = c.solution.get_status_string()
-        
-        if "optimal" in status.lower() or "feasible" in status.lower():
-            try:
-                return c.solution.get_objective_value(), (solve_end - solve_start), f"Success ({status})"
-            except cplex.exceptions.CplexSolverError:
-                return None, None, f"CPLEX Error: {status}"
+        if status == pulp.LpStatusOptimal:
+            return pulp.value(prob.objective), (solve_end - solve_start), "Success (Optimal)"
         else:
-            return None, None, f"CPLEX status: {status}"
+            return None, None, f"CPLEX status: {pulp.LpStatus[status]}"
     except Exception as e:
         return None, None, str(e)
 
