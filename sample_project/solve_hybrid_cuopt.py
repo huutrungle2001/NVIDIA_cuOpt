@@ -104,14 +104,20 @@ def solve_hybrid_with_cuopt(filepath):
     # Vehicle 0 is the Truck, Vehicles 1 to N are the Drones
     dm.add_cost_matrix(truck_df, 0)
     for i in range(1, n_fleet):
-        dm.add_cost_matrix(drone_df, i)
+        dm.add_cost_matrix(drone_df, 1) # Note: type 1 is drone type
+        
+    # Map each vehicle to its corresponding vehicle type
+    vehicle_types = cudf.Series([0] + [1] * num_drones, dtype=np.int32)
+    dm.set_vehicle_types(vehicle_types)
         
     dm.set_order_locations(cudf.Series(range(1, n_locations), dtype=np.int32))
     
     # Define Dimensions:
     # Dimension 1: Cargo weight (Truck cap = truck_cap, Drone cap = drone_cap)
-    order_demands_weight = cudf.Series(demands[1:], dtype=np.float32)
-    vehicle_capacities_weight = cudf.Series([truck_cap] + [drone_cap] * num_drones, dtype=np.float32)
+    # Scale float values by 100 to preserve precision as integers
+    order_demands_weight = cudf.Series((np.array(demands[1:]) * 100.0).astype(np.int32))
+    # Set capacity for truck and each drone in the fleet (n_fleet = 1 truck + num_drones)
+    vehicle_capacities_weight = cudf.Series([int(truck_cap * 100)] + [int(drone_cap * 100)] * num_drones, dtype=np.int32)
     dm.add_capacity_dimension("weight", order_demands_weight, vehicle_capacities_weight)
     
     # Dimension 2: Package count (Truck cap = unlimited, Drone cap = 1 to force return after each customer)
