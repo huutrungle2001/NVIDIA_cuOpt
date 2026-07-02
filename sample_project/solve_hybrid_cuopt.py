@@ -165,7 +165,7 @@ def solve_hybrid_with_cuopt(filepath, limit):
         print(f"cuOpt Makespan (max time): {makespan:.2f} seconds ({makespan / 60.0:.2f} minutes)")
         print("==================================================")
     else:
-        print(f"\n[ERROR] cuOpt solver failed: {solution.get_error_message()}")
+        print(f"\n[ERROR] cuOpt solver failed with status={status}: {solution.get_error_message()}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
