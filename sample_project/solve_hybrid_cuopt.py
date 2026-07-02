@@ -190,6 +190,7 @@ if __name__ == "__main__":
         print("Usage: python solve_hybrid_cuopt.py <instance_file> [time_limit_seconds]")
         sys.exit(1)
         
+    filepath = sys.argv[1]
     time_limit = 10
     if len(sys.argv) >= 3:
         time_limit = int(sys.argv[2])
