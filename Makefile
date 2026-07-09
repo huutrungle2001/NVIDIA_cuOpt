@@ -5,10 +5,10 @@
 all: slides
 
 slides:
-	$(MAKE) -C presentation all
+	$(MAKE) -C docs/presentation all
 
 clean:
-	$(MAKE) -C presentation clean
+	$(MAKE) -C docs/presentation clean
 
 purge:
-	$(MAKE) -C presentation purge
+	$(MAKE) -C docs/presentation purge
