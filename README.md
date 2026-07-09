@@ -9,13 +9,13 @@ Rather than just reading about optimization, this repository is a functional pla
 ## 1. Core Structure & Directories
 
 *   [**docs/**](docs/): Contains all core reference documents, technical overview papers, and the slide deck presentation.
-    *   [**00. Executive Summary**](docs/00_summary.md): Concise overview of cuOpt capabilities.
-    *   [**01. Overview & Core Capabilities**](docs/01_overview.md): Technical breakdown of the solvers (LP, MIP, VRP, QP) and agent skills.
-    *   [**02. Key Benefits**](docs/02_benefits.md): Performance benchmarks, world records, and enterprise support.
-    *   [**03. Real-World Use Cases**](docs/03_use_cases.md): Supply chain, fleet management, scheduling, and finance applications.
-    *   [**04. Getting Started Guide**](docs/04_getting_started.md): Installation and API setup paths.
-    *   [**05. Agentic Workflows & cuOpt Agent Skills**](docs/05_agentic_workflows.md): Instructions for LLM integration.
-*   [**docs/presentation/**](docs/presentation/): Directory containing presentation slides and materials.
+*   [**docs/presentation/**](docs/presentation/): Directory containing presentation slides, materials, and reference notes.
+    *   [**00. Executive Summary**](docs/presentation/00_summary.md): Concise overview of cuOpt capabilities.
+    *   [**01. Overview & Core Capabilities**](docs/presentation/01_overview.md): Technical breakdown of the solvers (LP, MIP, VRP, QP) and agent skills.
+    *   [**02. Key Benefits**](docs/presentation/02_benefits.md): Performance benchmarks, world records, and enterprise support.
+    *   [**03. Real-World Use Cases**](docs/presentation/03_use_cases.md): Supply chain, fleet management, scheduling, and finance applications.
+    *   [**04. Getting Started Guide**](docs/presentation/04_getting_started.md): Installation and API setup paths.
+    *   [**05. Agentic Workflows & cuOpt Agent Skills**](docs/presentation/05_agentic_workflows.md): Instructions for LLM integration.
     *   [**slides.md**](docs/presentation/slides.md): Marp-compatible markdown slide deck.
     *   [**slides.tex**](docs/presentation/slides.tex): LaTeX Beamer version of the slide deck.
     *   [**slides.pdf**](docs/presentation/slides.pdf): Pre-compiled presentation slide deck PDF.
