@@ -56,9 +56,9 @@ The capability limits vary depending on the deployment tier:
 ---
 
 *Related Documents:*
-- [**00. Executive Summary**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/00_summary.md)
-- [**01. Overview & Core Capabilities**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/01_overview.md)
-- [**02. Key Benefits**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/02_benefits.md)
-- [**03. Real-World Use Cases**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/03_use_cases.md)
-- [**05. Agentic Workflows**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/05_agentic_workflows.md)
-- [**README Index**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/README.md)
+- [**00. Executive Summary**](./00_summary.md)
+- [**01. Overview & Core Capabilities**](./01_overview.md)
+- [**02. Key Benefits**](./02_benefits.md)
+- [**03. Real-World Use Cases**](./03_use_cases.md)
+- [**05. Agentic Workflows**](./05_agentic_workflows.md)
+- [**README Index**](./README.md)

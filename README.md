@@ -4,12 +4,12 @@ Welcome to the NVIDIA cuOpt Information Hub. This repository contains complete d
 
 ## Contents
 
-- [**00. Executive Summary**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/00_summary.md): Read a quick, concise overview of everything cuOpt has to offer.
-- [**01. Overview & Core Capabilities**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/01_overview.md): Learn what NVIDIA cuOpt is, its solver engine capabilities (LP, MIP, VRP, QP), and how it integrates into agentic workflows.
-- [**02. Key Benefits**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/02_benefits.md): Explore the performance benchmarks, world records, cloud scalability, and enterprise support details.
-- [**03. Real-World Use Cases**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/03_use_cases.md): Discover how cuOpt is applied to Supply Chain, Fleet Management, Last-Mile Delivery, Field Dispatch, Job Scheduling, and Portfolio Optimization.
-- [**04. Getting Started Guide**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/04_getting_started.md): Practical ways to start experimenting and developing with cuOpt, including Google Colab, API Catalog, GitHub, and integrations.
-- [**05. Agentic Workflows & cuOpt Agent Skills**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/05_agentic_workflows.md): Discover how AI agents leverage modular cuOpt skills to dynamically model, execute, and debug decisions.
+- [**00. Executive Summary**](docs/00_summary.md): Read a quick, concise overview of everything cuOpt has to offer.
+- [**01. Overview & Core Capabilities**](docs/01_overview.md): Learn what NVIDIA cuOpt is, its solver engine capabilities (LP, MIP, VRP, QP), and how it integrates into agentic workflows.
+- [**02. Key Benefits**](docs/02_benefits.md): Explore the performance benchmarks, world records, cloud scalability, and enterprise support details.
+- [**03. Real-World Use Cases**](docs/03_use_cases.md): Discover how cuOpt is applied to Supply Chain, Fleet Management, Last-Mile Delivery, Field Dispatch, Job Scheduling, and Portfolio Optimization.
+- [**04. Getting Started Guide**](docs/04_getting_started.md): Practical ways to start experimenting and developing with cuOpt, including Google Colab, API Catalog, GitHub, and integrations.
+- [**05. Agentic Workflows & cuOpt Agent Skills**](docs/05_agentic_workflows.md): Discover how AI agents leverage modular cuOpt skills to dynamically model, execute, and debug decisions.
 
 ---
 

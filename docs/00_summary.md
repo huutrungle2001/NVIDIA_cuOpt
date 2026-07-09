@@ -50,8 +50,8 @@ NVIDIA cuOpt offers tiered access models depending on deployment needs:
 ---
 
 *Detailed Reference Documents:*
-- [**01. Overview & Core Capabilities**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/01_overview.md)
-- [**02. Key Benefits**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/02_benefits.md)
-- [**03. Use Cases**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/03_use_cases.md)
-- [**04. Getting Started**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/04_getting_started.md)
-- [**05. Agentic Workflows**](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/05_agentic_workflows.md)
+- [**01. Overview & Core Capabilities**](./01_overview.md)
+- [**02. Key Benefits**](./02_benefits.md)
+- [**03. Use Cases**](./03_use_cases.md)
+- [**04. Getting Started**](./04_getting_started.md)
+- [**05. Agentic Workflows**](./05_agentic_workflows.md)
