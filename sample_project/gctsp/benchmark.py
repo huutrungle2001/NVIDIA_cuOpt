@@ -3,10 +3,12 @@ import sys
 import glob
 import argparse
 import time
+import multiprocessing
 import pandas as pd
 from concurrent.futures import ProcessPoolExecutor
 from sample_project.gctsp.solve_mip import solve_gctsp_mip
 from sample_project.gctsp.solve_hybrid import solve_gctsp_hybrid
+
 
 def solve_single_instance(filepath, solver_name):
     basename = os.path.basename(filepath)
@@ -83,6 +85,7 @@ def run_benchmarks(folder_name="tsplib_small", solver_name="cbc", max_files=5, j
     print(f"Results saved to {os.path.join(out_dir, 'benchmark_results.csv')}")
 
 if __name__ == "__main__":
+    multiprocessing.set_start_method('spawn', force=True)
     parser = argparse.ArgumentParser(description="Run GCTSP comparative benchmarks")
     parser.add_argument("--folder", type=str, default="tsplib_small", help="Dataset folder (tsplib_small, tsplib_medium, tsplib_large)")
     parser.add_argument("--solver", type=str, default="cbc", help="MIP backend solver (cbc, gurobi, cplex)")
