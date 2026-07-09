@@ -30,7 +30,7 @@ Rather than just reading about optimization, this repository is a functional pla
 ## 2. Onboarding AI Agents (Instruction Files)
 
 All AI agents arriving in this workspace should immediately read:
-*   [**AGENTS.md**](AGENTS.md) / [**.agents/AGENTS.md**](.agents/AGENTS.md): Detailed workflow instructions for agents. This outlines slide synchronization rules, remote server compilation scripts, and primary/secondary coding objectives.
+*   [**.agents/AGENTS.md**](.agents/AGENTS.md): Onboarding and instruction document for AI agents executing in this repository. It defines primary coding objectives, remote benchmarking workflows, and solver configurations.
 
 ---
 
