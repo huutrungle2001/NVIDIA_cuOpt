@@ -43,10 +43,14 @@ def solve_single_instance(filepath, solver_name):
     }
 
 def run_benchmarks(folder_name="tsplib_small", solver_name="cbc", max_files=5, jobs=1):
-    base_dir = "/Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/data/gctsp"
-    # Fallback to server path if running on server
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(script_dir))
+    base_dir = os.path.join(project_root, "data", "gctsp")
+    
     if not os.path.exists(base_dir):
-        base_dir = "/home/orlab/TrungLeHuu/NVIDIA_cuOpt/data/gctsp"
+        # Fallback to standard local path
+        base_dir = "/Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/data/gctsp"
+
         
     folder_path = os.path.join(base_dir, folder_name)
     if not os.path.exists(folder_path):
