@@ -38,7 +38,7 @@ If you are on a Mac or a machine without an NVIDIA GPU, you can run this script 
     ```python
     !pip install cudf-cu12 cuopt-cu12 --extra-index-url=https://pypi.nvidia.com
     ```
-4.  Copy the code from [solve_vrp.py](file:///Users/huutrungle2001/Documents/OnGoing/NVIDIA_cuOpt/sample_project/solve_vrp.py) into a cell and execute it.
+4.  Copy the code from [solve_vrp.py](solve_vrp.py) into a cell and execute it.
 
 ### Option B: Run via Docker (For GPU-enabled Linux systems)
 
